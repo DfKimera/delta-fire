@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <module type="Flex" version="4">
-  <component name="FlexBuildConfigurationManager" active="fl-sandbox">
+  <component name="FlexBuildConfigurationManager" active="delta-fire">
     <configurations>
-      <configuration name="fl-sandbox" pure-as="true" main-class="Bootstrap" output-file="Bootstrap.swf" output-folder="$MODULE_DIR$/out/production/fl-sandbox" wrapper-template-path="$MODULE_DIR$/html-template">
+      <configuration name="delta-fire" pure-as="true" main-class="Bootstrap" output-file="Bootstrap.swf" output-folder="$MODULE_DIR$/out/production" wrapper-template-path="$MODULE_DIR$/html-template">
         <dependencies target-player="15.0">
           <entries>
             <entry library-id="74b20a83-a432-42a5-9923-8453843476fe">
@@ -11,7 +11,9 @@
           </entries>
           <sdk name="AIR SDK" />
         </dependencies>
-        <compiler-options />
+        <compiler-options>
+          <option name="additionalOptions" value="-advanced-telemetry" />
+        </compiler-options>
         <packaging-air-desktop />
         <packaging-android />
         <packaging-ios />

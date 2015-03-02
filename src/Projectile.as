@@ -20,10 +20,12 @@ package {
 
 		public var isFriendly:Boolean = false;
 
-		public function Projectile(x:Number, y:Number, angle:Number, isFriendly:Boolean) {
+		public function Projectile(x:Number, y:Number, angle:Number, speed:Number, damage:Number, isFriendly:Boolean) {
 			this.angle = angle;
 			this.x = x;
 			this.y = y;
+			this.speed = speed;
+			this.damage = damage;
 			this.isFriendly = isFriendly;
 
 			var phi:Number = (angle - 90) * (Math.PI / 180);
@@ -38,7 +40,8 @@ package {
 		}
 
 		public function checkBounds():void {
-			Utils.killOutOfBounds(this);
+			var outOfBounds:Boolean = Utils.killOutOfBounds(this);
+			if(outOfBounds) { Game.$projectiles.remove(this); this.alive = false; }
 		}
 
 		public override function update():void {
@@ -52,7 +55,7 @@ package {
 			x += dx;
 			y += dy;
 
-			//this.checkBounds();
+			this.checkBounds();
 		}
 
 		public override function kill():void {
@@ -63,6 +66,7 @@ package {
 			if(projectile.isFriendly == (target is Enemy)) {
 
 				Game.emitDebris(target.x, target.y, 10, 0.5);
+				Game.$projectiles.remove(projectile);
 
 				projectile.kill();
 				target.hurt(projectile.damage);

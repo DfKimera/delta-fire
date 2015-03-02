@@ -7,7 +7,7 @@ package {
 
 	public class Player extends FlxSprite {
 
-		[Embed(source="../assets/ship_player.png")]
+		[Embed(source="../assets/player_ship.png")]
 		public static var SPRITE:Class;
 
 		[Embed(source="../assets/ship_thrust_back.png")]
@@ -17,7 +17,7 @@ package {
 		[Embed(source="../assets/ship_thrust_right.png")]
 		public static var THRUSTER_RIGHT:Class;
 
-		public var maxHealth:int = 100;
+		public var maxHealth:int = 200;
 
 		public var thrusterBack:FlxSprite;
 		public var thrusterLeft:FlxSprite;
@@ -27,11 +27,17 @@ package {
 		public var sideThrust:Number = 0;
 
 		public var turnSpeed:Number = 200;
-		public var moveSpeed:Number = 145;
-		public var baseMaxVelocity:Number = 100;
+		public var moveSpeed:Number = 250;
+		public var baseMaxVelocity:Number = 250;
 
-		public var fireRateMin:Number = 5;
-		public var fireRateCurrent:int = 5;
+		public var fireRateMin:Number = 4;
+		public var fireRateCurrent:int = fireRateMin;
+
+		public var decayDrag:Number = 1.15;
+		public var turnDrag:Number = 0.95;
+
+		public var bulletSpeed:Number = 15;
+		public var bulletDamage:Number = 10;
 
 		public function Player() {
 			loadGraphic(SPRITE);
@@ -43,11 +49,11 @@ package {
 			thrusterBack.origin = this.origin;
 
 			this.health = maxHealth;
-			this.maxVelocity = new FlxPoint(100, 100);
-			this.maxAngular = 200;
+			this.maxVelocity = new FlxPoint(baseMaxVelocity, baseMaxVelocity);
+			this.maxAngular = turnSpeed;
 
-			this.angularDrag = turnSpeed * 1.33;
-			this.drag.x = this.drag.y = moveSpeed * 1.33;
+			this.angularDrag = turnSpeed * turnDrag;
+			this.drag.x = this.drag.y = moveSpeed * decayDrag;
 		}
 
 		public override function update():void {
@@ -64,7 +70,7 @@ package {
 
 		public function autoHeal():void {
 			if(this.health < this.maxHealth) {
-				this.health += 0.1;
+				this.health += 0.15;
 			}
 		}
 
@@ -92,19 +98,21 @@ package {
 				forwardThrust = 0;
 			}
 
+			var sidewaysThrust:Number = 0;
+
 			if(FlxG.keys.A) {
-				sideThrust = -(moveSpeed * boostRatio);
+				sidewaysThrust = -(moveSpeed * boostRatio);
 			} else if(FlxG.keys.D) {
-				sideThrust = +(moveSpeed * boostRatio);
+				sidewaysThrust = +(moveSpeed * boostRatio);
 			} else {
-				sideThrust = 0;
+				sidewaysThrust = 0;
 			}
 
 			var theta:Number = (angle + 90) * (Math.PI / 180);
 			var sinTheta:Number = Math.sin(theta);
 			var cosTheta:Number = Math.cos(theta);
 
-			acceleration.x = (cosTheta * forwardThrust) + (sinTheta * sideThrust);
+			acceleration.x = (cosTheta * forwardThrust) + (sinTheta * sideThrust) + sidewaysThrust;
 			acceleration.y = (sinTheta * forwardThrust) - (cosTheta * sideThrust);
 
 			if(FlxG.keys.LEFT) {
@@ -136,7 +144,7 @@ package {
 		}*/
 
 		public function checkBounds():void {
-			//Utils.wrapOnBounds(this);
+			Utils.wrapOnBounds(this);
 		}
 
 		public override function hurt(damage:Number):void {
@@ -206,7 +214,7 @@ package {
 
 		public function fireWeapon(angle:Number):void {
 			var pos:FlxPoint = getMidpoint();
-			new Projectile(pos.x, pos.y, angle, true);
+			new Projectile(pos.x, pos.y, angle, bulletSpeed, bulletDamage, true);
 		}
 	}
 }

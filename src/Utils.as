@@ -10,10 +10,13 @@ package {
 			else if(spr.y > Game.SCREEN_H) { spr.y = 1; }
 		}
 
-		public static function killOutOfBounds(spr:FlxSprite):void {
+		public static function killOutOfBounds(spr:FlxSprite):Boolean {
 			if(spr.x < 0 || spr.x > Game.SCREEN_W || spr.y < 0 || spr.y > Game.SCREEN_H) {
 				spr.kill();
+				return true;
 			}
+
+			return false;
 		}
 
 	}

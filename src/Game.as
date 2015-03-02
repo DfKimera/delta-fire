@@ -47,7 +47,7 @@ package {
 			$attachments = new FlxGroup();
 			$players = new FlxGroup();
 			$enemies = new FlxGroup();
-			$projectiles = new FlxGroup();
+			$projectiles = new FlxGroup(64);
 
 			enemySpawnTimer = new Timer(6500);
 

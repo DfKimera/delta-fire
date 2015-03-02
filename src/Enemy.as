@@ -9,7 +9,7 @@ package {
 
 	public class Enemy extends FlxSprite {
 
-		[Embed(source="../assets/player_red.png")]
+		[Embed(source="../assets/enemy_ship.png")]
 		public static var SPRITE:Class;
 
 		public var aiTickTimer:Timer = new Timer(2000);
@@ -23,6 +23,8 @@ package {
 		public var speed:Number;
 
 		public var speedLimit:Array = [5, 15];
+		public var bulletSpeed:Number = 6;
+		public var bulletDamage:Number = 5;
 
 		public function Enemy(x:Number, y:Number) {
 			this.x = x;
@@ -60,7 +62,7 @@ package {
 
 			var angle:Number = FlxU.getAngle(this.getMidpoint(), target.getMidpoint());
 
-			new Projectile(x, y, angle, false);
+			new Projectile(x, y, angle, bulletSpeed, bulletDamage, false);
 		}
 
 		public function setTargetAngle(angle:Number):void {
@@ -96,11 +98,15 @@ package {
 		public override function kill():void {
 
 			Game.emitDebris(x, y, 100, 5);
+			Game.$enemies.remove(this);
 
 			super.kill();
 
 			aiTickTimer.stop();
 			aiFireTimer.stop();
+
+			aiTickTimer = null;
+			aiFireTimer = null;
 
 			Game.numKills++;
 
